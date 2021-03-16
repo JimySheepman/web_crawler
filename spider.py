@@ -2,14 +2,7 @@ from urllib.request import urlopen #used in python to connect to webpage
 from link_finder import LinkFinder #import link finder in link_finder.py
 from crawler import * #import ALL in general.py
 
-
-
 class Spider:
-    """
-    #bund of link in waiting list. grab links and connect to page and grab all html, throw into linkfinder, then linkfinder will parse data and get all links. spider will then add those into the waiting list.
-    after finish crawling the waiting list it will throw the url to crawled list.
-    """
-
     #class variables (shared among all spiders instances)
     project_Name = ''
     base_url = ''
@@ -30,12 +23,6 @@ class Spider:
 
     @staticmethod
     def boot():
-        """
-        Function used for first spider, little more task for this little one
-        1. create the file directory based on the website to be crawled.
-        2. create the queue.txt and crawled.txt files
-
-        """
         create_project_dir(Spider.project_name)
         create_data_files(Spider.project_name, Spider.base_url)
         #both queue and crawled are retrieved from file and saved in ram for faster operation.
@@ -44,13 +31,8 @@ class Spider:
 
     @staticmethod
     def crawl_page(thread_name, page_url):
-        """
-            create multi-threaded spiders to crawl
-            All spiders are to sync together so no overlapping of crawling on page
-        """
         if page_url not in Spider.crawled:
             print(thread_name + ' now crawling ' + page_url)
-            #print('Queue: ' + str(len(Spider.queue) + ' | Crawled: ' + str(len(Spider.crawled))))
             print('Queue: {}   |   Crawled: {}'.format(len(Spider.queue), len(Spider.crawled)))
             Spider.add_links_to_queue(Spider.gather_links(page_url))
             #remove from queue list after completed.
@@ -62,13 +44,6 @@ class Spider:
 
     @staticmethod
     def gather_links(page_url):
-        """
-        connects to site
-        takes the html converts from html bytes to proper readable string
-        passes to LinkFinder, LinkFinder parses throught and get all the links of the url.
-        if theres no error then return., else it will return an empty set with the message
-        "error: cannot crawl page!"
-        """
         html_string = ''
         #using error catching on networking
         try:
@@ -98,10 +73,6 @@ class Spider:
             #checks if url was crawled
             if url in Spider.crawled:
                 continue
-            #checks if spider is in correct site,
-            #spiders may accidentally crawled google,FB, Insta,
-            #if the site consist them. this is to make sure we are crawling
-            #the only site we told spider to crawl. eg: thenewboston.com/******
             if Spider.domain_name not in url:
                 continue
             #add into queue
@@ -109,9 +80,5 @@ class Spider:
 
     @staticmethod
     def update_files():
-        """
-        updates both queue and crawled text files
-        to prevent spiders from crawling again.
-        """
         set_to_file(Spider.queue, Spider.queue_file)
         set_to_file(Spider.crawled, Spider.crawled_file)
