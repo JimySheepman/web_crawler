@@ -2,10 +2,6 @@ import os
 
 #Create new folder when each website is crawled
 def create_project_dir(directory):
-	"""
-	Create a project folder by using the name given in the parameter
-	 - Check if the file was created if not run the code to create the file
-	"""
 	if not os.path.exists(directory):
 		print('Creating project file ' + directory)
 		os.makedirs(directory)
@@ -52,6 +48,3 @@ def set_to_file(links, file):
 	delete_file_contents(file)
 	for link in sorted(links):
 		append_to_file(file, link)
-
-#create_project_dir('thenewboston')
-#create_data_files('thenewboston', 'https://thenewboston.com/')
